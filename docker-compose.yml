@@ -1,0 +1,14 @@
+version: "3.8"
+
+x-baseapp:
+  &base-app
+  build:
+    context: ./
+    dockerfile: Dockerfile
+
+services:
+  app:
+    <<: *base-app
+    command: python /code/app/server.py
+    ports:
+      - "8080:8080"
