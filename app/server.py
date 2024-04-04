@@ -17,4 +17,8 @@ def fullscreen():
 
 
 if __name__ == '__main__':
-    app.run(debug=DEBUG, host='0.0.0.0', port=8080)
+    if(DEBUG):
+        app.run(debug=True, host='0.0.0.0', port=8080)
+    else:
+        from waitress import serve
+        serve(app, host='0.0.0.0', port=8080)
