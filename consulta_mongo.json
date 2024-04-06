@@ -1,0 +1,16 @@
+db.getCollection("strava").aggregate([
+    {
+        $unwind: '$geometry.coordinates'
+    },
+    {
+        $group: {
+            _id: '$_id',
+            avgLat: {
+                $round: [{ $avg: { $arrayElemAt: ['$geometry.coordinates', 0] } }, 7]
+            },
+            avgLon: {
+                $avg: { $arrayElemAt: ['$geometry.coordinates', 1] }
+            }
+        }
+    }
+])

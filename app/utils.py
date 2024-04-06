@@ -1,5 +1,6 @@
 import os
 import folium
+import requests
 import pandas as pd
 import geopandas as gpd
 from zipfile import ZipFile
@@ -51,6 +52,10 @@ def strava_to_mongo(stravazipfile, collection):
     features = create_features(merged_df)
     print(f'Insertando {len(features)} elementos en mongodb')
     collection.insert_many(features, ordered=False)
+
+
+# def points_to_cities():
+
 
 
 def plot_data(collection):
