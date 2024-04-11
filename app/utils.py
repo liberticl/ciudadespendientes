@@ -1,14 +1,13 @@
 import os
-import folium
-import requests
 import pandas as pd
 import geopandas as gpd
+from codes.mongodb import middle_points_aggregate
+from codes.plot_maps import ride_map
+from codes.apis import get_place_polygon
 from zipfile import ZipFile
-from pymongo import MongoClient
-from shapely.geometry import LineString
+from pymongo import MongoClient, UpdateOne
 from settings import (MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       DATA_DIR, DEBUG)
-
 
 # Creates the mongodb files to upload
 def create_features(geodata, max=10):
@@ -54,42 +53,29 @@ def strava_to_mongo(stravazipfile, collection):
     collection.insert_many(features, ordered=False)
 
 
-# def points_to_cities():
-
-
-
-def plot_data(collection):
-    query = {'year': 2023}
-    projection = ['year', 'geometry']
-    cursor = collection.find(query, {'_id': 0, **dict.fromkeys(projection, 1)})
-
+# Get middle point of geometry
+def create_middle_points(collection):
+    pipeline = middle_points_aggregate
+    cursor = collection.aggregate(pipeline)
     data = list(cursor)
-    parsed_data = []
-    for item in data:
-        parsed_proj = {}
-        for key in projection:
-            if key != 'geometry':
-                parsed_proj.update({key: item[key]})
-            else:
-                parsed_proj.update({key: LineString(item[key]['coordinates'])})
-        parsed_data.append(parsed_proj)
+    
+    update_operation = [
+        {
+            'filter': {'_id': result['_id']},
+            'update': {'$set': {'middlePoint': result['middlePoint']}}
+        }
+        for result in data
+    ]
 
-    gdf = gpd.GeoDataFrame(parsed_data)
-
-    mapa = folium.Map(location=(-33.049689, -71.621202),    # Mi casa
-                      zoom_start=13,    # Ver si es factible automatizar
-                      control_scale=True
-                      )
-    geojson_data = gdf.to_json()
-    folium.GeoJson(geojson_data).add_to(mapa)
-    return mapa
+    collection.bulk_write([UpdateOne(**op) for op in update_operation])
 
 
 if __name__ == '__main__':
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
-
+    ride_map(collection)
+    client.close()
     # import time
     # start = time.time()
     # plot_data(collection)
