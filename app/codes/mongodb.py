@@ -26,7 +26,7 @@ middle_points_aggregate = [
 ]
 
 points_inside = {
-    'year': 2023,
+    # 'year': 2023,
     'middlePoint': {
         '$geoWithin': {
             '$geometry': {
@@ -36,3 +36,35 @@ points_inside = {
         }
     }
 }
+
+map_middle_point = [
+    {'$match': {
+        'year': 2023,
+        'middlePoint': {
+            '$geoWithin': {
+                '$geometry': {
+                    'type': 'Polygon',
+                    'coordinates': '<city_bounds>'
+                    }
+                }
+            }
+        }
+    },
+    {'$unwind': '$geometry.coordinates'},
+    {'$group': {
+        '_id': '',
+        'midLat': {'$avg': {'$arrayElemAt': ['$geometry.coordinates', 0]}},
+        'midLon': {'$avg': {'$arrayElemAt': ['$geometry.coordinates', 1]}}
+        }
+    },
+    {'$project': {
+        'middlePoint': {
+            'type': 'Point',
+            'coordinates': [
+                {'$round': ['$midLat', 7]},
+                {'$round': ['$midLon', 7]}
+                ]
+            }
+        }
+    }
+]
