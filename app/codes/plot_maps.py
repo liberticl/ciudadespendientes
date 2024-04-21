@@ -35,7 +35,9 @@ def ride_map(collection):
 
 def middle_points_map(collection):
     projection = ['year', 'geometry']
-    cursor = collection.find(points_inside, {'_id': 0, **dict.fromkeys(projection, 1)})
+    cursor = collection.find(
+        points_inside,
+        {'_id': 0, **dict.fromkeys(projection, 1)})
 
     data = list(cursor)
     parsed_data = []
@@ -45,7 +47,8 @@ def middle_points_map(collection):
             if key != 'geometry':
                 parsed_proj.update({key: item[key]})
             else:
-                parsed_proj.update({'geometry': Point(item[key]['coordinates'])})
+                parsed_proj.update(
+                    {'geometry': Point(item[key]['coordinates'])})
         parsed_data.append(parsed_proj)
 
     gdf = gpd.GeoDataFrame(parsed_data).head(400)
@@ -74,12 +77,12 @@ def city_map(city):
     return mapa
 
 
-def get_city_bounds(city, only_bounds = False):
+def get_city_bounds(city, only_bounds=False):
     gdf_city = get_place_polygon(city).to_crs('EPSG:3857')
     gdf_city['area'] = gdf_city['geometry'].area
     data = gdf_city[gdf_city['area'] == gdf_city['area'].max()]
 
-    if(only_bounds):
+    if (only_bounds):
         data = data[['geometry']].to_crs(epsg='4326').total_bounds
         return box(*data)
     else:
@@ -87,14 +90,16 @@ def get_city_bounds(city, only_bounds = False):
         return data['geometry'][0]
 
 
-def city_ride_map(city, center,collection):
+def city_ride_map(city, center, collection):
     coords = list(Polygon(get_city_bounds(city)).exterior.coords)
-    coords = [[round(x,6), round(y,6)] for x,y in coords]
+    coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
     inside = points_inside
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
     projection = ['year', 'geometry']
-    cursor = collection.find(inside, {'_id': 0, **dict.fromkeys(projection, 1)})
+    cursor = collection.find(
+        inside,
+        {'_id': 0, **dict.fromkeys(projection, 1)})
 
     data = list(cursor)
     parsed_data = []
@@ -109,7 +114,7 @@ def city_ride_map(city, center,collection):
 
     gdf = gpd.GeoDataFrame(parsed_data)
 
-    mapa = folium.Map(location= center,
+    mapa = folium.Map(location=center,
                       zoom_start=13,    # Ver si es factible automatizar
                       control_scale=True
                       )
@@ -118,19 +123,26 @@ def city_ride_map(city, center,collection):
     return mapa
 
 
-def color_ride_map(city, center,collection):
+def color_ride_map(city, center, collection):
     coords = list(Polygon(get_city_bounds(city)).exterior.coords)
-    coords = [[round(x,6), round(y,6)] for x,y in coords]
+    coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
     inside = points_inside
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
     projection = ['year', 'total_trip_count', 'geometry']
-    cursor = collection.find(inside, {'_id': 0, **dict.fromkeys(projection, 1)})
+    del coords
+    cursor = collection.find(
+        inside,
+        {'_id': 0, **dict.fromkeys(projection, 1)})
 
-    mapa = folium.Map(location=center, zoom_start=13, control_scale=True, tiles='CartoDB positron')
+    mapa = folium.Map(
+        location=center,
+        zoom_start=13,
+        control_scale=True,
+        tiles='CartoDB positron')
 
     for item in cursor:
-        coordinates = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
+        coords = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
         total_trip_count = item['total_trip_count']
         line_color = 'blue'
 
@@ -140,8 +152,10 @@ def color_ride_map(city, center,collection):
             line_color = 'orange'
         elif total_trip_count > 200:
             line_color = 'yellow'
-        
-        # new = [transformer.transform(lon, lat) for lon, lat in coordinates]
-        folium.PolyLine(locations=coordinates, color=line_color, tooltip=f"Total Trip Count: {total_trip_count}").add_to(mapa)
+
+        folium.PolyLine(locations=coords,
+                        color=line_color,
+                        tooltip=f"Total Trip Count: {total_trip_count}"
+                        ).add_to(mapa)
 
     return mapa

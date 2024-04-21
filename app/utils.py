@@ -9,6 +9,7 @@ from shapely.geometry import Polygon
 from settings import (MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       DATA_DIR, DEBUG)
 
+
 # Creates the mongodb files to upload
 def create_features(geodata, max=10):
     features = []
@@ -58,7 +59,7 @@ def create_middle_points(collection):
     pipeline = middle_points_aggregate
     cursor = collection.aggregate(pipeline)
     data = list(cursor)
-    
+
     update_operation = [
         {
             'filter': {'_id': result['_id']},
@@ -72,16 +73,16 @@ def create_middle_points(collection):
 
 # Get middle point of polygon
 def get_polygon_middle_point(city, collection):
-    coords = list(Polygon(get_city_bounds(city, only_bounds=True)).exterior.coords)
-    coords = [[round(x,6), round(y,6)] for x,y in coords]
+    coords = list(Polygon(
+        get_city_bounds(city, only_bounds=True)).exterior.coords)
+    coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
     middle = map_middle_point
-    middle[0]['$match']['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
+    middle[0]['$match']['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords # noqa
     cursor = collection.aggregate(middle)
     data = list(cursor)
     point = data[0]['middlePoint']['coordinates']
-    return (point[1],point[0])
-
+    return (point[1], point[0])
 
 
 if __name__ == '__main__':

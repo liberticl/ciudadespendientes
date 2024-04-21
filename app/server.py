@@ -6,8 +6,15 @@ from utils import get_polygon_middle_point
 
 
 app = Flask(__name__)
-ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso', 'Villa Alemana', 'Quilpué', 'Concón']
+
+ALLOWED_CITIES = ['Viña del Mar',
+                  'Valparaíso',
+                  'Villa Alemana',
+                  'Quilpué',
+                  'Concón']
+
 city = 'Viña del Mar, Chile'
+
 
 # @app.route("/", methods=['GET', 'POST'])
 @app.route("/")
@@ -31,7 +38,7 @@ def fullscreen():
 
 
 if __name__ == '__main__':
-    if(DEBUG):
+    if (DEBUG):
         app.run(debug=True, host='0.0.0.0', port=8080)
     else:
         from waitress import serve
