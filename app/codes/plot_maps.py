@@ -123,12 +123,13 @@ def city_ride_map(city, center, collection):
     return mapa
 
 
-def color_ride_map(city, center, collection):
+def color_ride_map(city, center, years, collection):
     coords = list(Polygon(get_city_bounds(city)).exterior.coords)
     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
-    inside = points_inside
+    inside = points_inside[0]['$match']
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
+    inside['year']['$in'] = years
     projection = ['year', 'total_trip_count', 'geometry']
     del coords
     cursor = collection.find(

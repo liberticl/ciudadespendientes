@@ -28,7 +28,7 @@ def fullscreen():
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
     center = get_polygon_middle_point(city, collection)
-    m = color_ride_map(city, center, collection)
+    m = color_ride_map(city, center, [2022, 2023], collection)
     return m.get_root().render()
 
 

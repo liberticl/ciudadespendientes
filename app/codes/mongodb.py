@@ -25,17 +25,25 @@ middle_points_aggregate = [
     }
 ]
 
-points_inside = {
-    # 'year': 2023,
-    'middlePoint': {
-        '$geoWithin': {
-            '$geometry': {
-                'type': 'Polygon',
-                'coordinates': '<city_bounds>'
+points_inside = [
+    {'$match': {
+        'year': {'$in': '<yearsArray>'},
+        'middlePoint': {
+            '$geoWithin': {
+                '$geometry': {
+                    'type': 'Polygon',
+                    'coordinates': '<city_bounds>'
+                    }
+                }
             }
         }
+    },
+    {'$group': {
+        '_id': '$geometry',
+        'total_trip_count': { '$sum': '$total_trip_count' }
+        }
     }
-}
+]
 
 map_middle_point = [
     {'$match': {
