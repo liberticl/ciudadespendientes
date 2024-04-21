@@ -124,53 +124,24 @@ def color_ride_map(city, center,collection):
     coords = [coords + [coords[0]]]
     inside = points_inside
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
-    projection = ['year', 'edgeUID', 'total_trip_count', 'geometry']
+    projection = ['year', 'total_trip_count', 'geometry']
     cursor = collection.find(inside, {'_id': 0, **dict.fromkeys(projection, 1)})
 
-    data = list(cursor)
-    parsed_data = []
-    for item in data:
-        parsed_proj = {}
-        for key in projection:
-            if key != 'geometry':
-                parsed_proj.update({key: item[key]})
-            else:
-                parsed_proj.update({key: LineString(item[key]['coordinates'])})
-        parsed_data.append(parsed_proj)
+    mapa = folium.Map(location=center, zoom_start=13, control_scale=True, tiles='CartoDB positron')
 
-    import matplotlib
-    matplotlib.use('agg')
-    gdf = gpd.GeoDataFrame(parsed_data)
-    # gdf.crs = 'EPSG:3857'
+    for item in cursor:
+        coordinates = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
+        total_trip_count = item['total_trip_count']
+        line_color = 'blue'
 
-    mapa = gdf.explore(
-        column='total_trip_count',
-        legend=True,
-        tooltip=False,
-        popup=['year','total_trip_count','edgeUID'],
-        legend_kwds=dict(colorbar=False),
-        name='MAPITA'
-    )
-
-    folium.TileLayer('openstreetmap', show=True).add_to(mapa)
-
-    folium.LayerControl().add_to(mapa)
-    # mapa = folium.Map(location= center,
-    #                   zoom_start=13,    # Ver si es factible automatizar
-    #                   control_scale=True
-    #                   )
-    
-    # geojson_data = gdf.to_json()
-    
-    # folium.Choropleth(
-    #     geo_data=geojson_data,
-    #     data=gdf,
-    #     columns=['geometry', 'total_trip_count'],
-    #     key_on='feature.geometry',
-    #     fill_color='YlGn',
-    #     fill_opacity=0.7,
-    #     line_opacity=0.2,
-    #     legend_name='Total Trip Count'
-    # ).add_to(mapa)
+        if total_trip_count > 10000:
+            line_color = 'red'
+        elif total_trip_count > 1000:
+            line_color = 'orange'
+        elif total_trip_count > 200:
+            line_color = 'yellow'
+        
+        # new = [transformer.transform(lon, lat) for lon, lat in coordinates]
+        folium.PolyLine(locations=coordinates, color=line_color, tooltip=f"Total Trip Count: {total_trip_count}").add_to(mapa)
 
     return mapa
