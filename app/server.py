@@ -13,7 +13,7 @@ ALLOWED_CITIES = ['Viña del Mar',
                   'Quilpué',
                   'Concón']
 
-city = 'Viña del Mar, Chile'
+city = 'Valparaíso, Chile'
 
 
 # @app.route("/", methods=['GET', 'POST'])
@@ -28,7 +28,7 @@ def fullscreen():
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
     center = get_polygon_middle_point(city, collection)
-    m = color_ride_map(city, center, [2022, 2023], collection)
+    m = color_ride_map(city, center, [2019], collection)
     return m.get_root().render()
 
 
