@@ -136,27 +136,51 @@ def color_ride_map(city, center, years, collection):
         inside,
         {'_id': 0, **dict.fromkeys(projection, 1)})
 
+    tile = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    attr ='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+
     mapa = folium.Map(
         location=center,
         zoom_start=13,
         control_scale=True,
-        tiles='CartoDB positron')
+        prefer_canvas=True,
+        tiles='')
+        # attr=attr)
+        # tiles='Cartodb dark_matter')
+    
+    folium.TileLayer(tile, name='Mapa', attr=attr).add_to(mapa)
+
+    color_layers = {'blue': folium.FeatureGroup(name='Blue Lines'),
+                    'yellow': folium.FeatureGroup(name='Yellow Lines'),
+                    'orange': folium.FeatureGroup(name='Orange Lines'),
+                    'red': folium.FeatureGroup(name='Red Lines'),
+                    }
 
     for item in cursor:
         coords = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
         total_trip_count = item['total_trip_count']
         line_color = 'blue'
+        kw = {"opacity": 0.2, "weight": 1}
 
-        if total_trip_count > 10000:
+        if total_trip_count > 2000:
             line_color = 'red'
-        elif total_trip_count > 1000:
+            kw = {"opacity": 1.0, "weight": 4}
+        elif total_trip_count > 300:
             line_color = 'orange'
-        elif total_trip_count > 200:
+            kw = {"opacity": 0.8, "weight": 3}
+        elif total_trip_count > 100:
             line_color = 'yellow'
+            kw = {"opacity": 0.5, "weight": 2}
 
         folium.PolyLine(locations=coords,
                         color=line_color,
-                        tooltip=f"Total Trip Count: {total_trip_count}"
-                        ).add_to(mapa)
+                        tooltip=f"Total Trip Count: {total_trip_count}",
+                        **kw).add_to(color_layers[line_color])
+
+    for color_group in color_layers.values():
+        color_group.add_to(mapa)
+
+    folium.LayerControl(collapsed=False,
+                        overlay=True).add_to(mapa)
 
     return mapa
