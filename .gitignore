@@ -1,6 +1,7 @@
 .python-version
 .env
 
+ascenval.py
 data
 **/__pycache__
 

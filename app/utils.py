@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import geopandas as gpd
 from codes.mongodb import middle_points_aggregate, map_middle_point
-from codes.plot_maps import color_ride_map, get_city_bounds
+from codes.plot_maps import get_city_bounds
 from zipfile import ZipFile
 from pymongo import MongoClient, UpdateOne
 from shapely.geometry import Polygon

@@ -123,7 +123,7 @@ def city_ride_map(city, center, collection):
     return mapa
 
 
-def color_ride_map(city, center, years, collection):
+def color_ride_map(city, center, years, collection1, collection2):
     coords = list(Polygon(get_city_bounds(city)).exterior.coords)
     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
@@ -132,9 +132,11 @@ def color_ride_map(city, center, years, collection):
     inside['year']['$in'] = years
     projection = ['year', 'total_trip_count', 'geometry']
     del coords
-    cursor = collection.find(
+    cursor1 = collection1.find(
         inside,
         {'_id': 0, **dict.fromkeys(projection, 1)})
+    
+    cursor2 = collection2.find()
 
     tile = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
     attr ='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
@@ -145,8 +147,6 @@ def color_ride_map(city, center, years, collection):
         control_scale=True,
         prefer_canvas=True,
         tiles='')
-        # attr=attr)
-        # tiles='Cartodb dark_matter')
     
     folium.TileLayer(tile, name='Mapa', attr=attr).add_to(mapa)
 
@@ -154,9 +154,10 @@ def color_ride_map(city, center, years, collection):
                     'yellow': folium.FeatureGroup(name='Yellow Lines'),
                     'orange': folium.FeatureGroup(name='Orange Lines'),
                     'red': folium.FeatureGroup(name='Red Lines'),
+                    'ascensores': folium.FeatureGroup(name='Ascensores'),
                     }
 
-    for item in cursor:
+    for item in cursor1:
         coords = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
         total_trip_count = item['total_trip_count']
         line_color = 'blue'
@@ -176,6 +177,14 @@ def color_ride_map(city, center, years, collection):
                         color=line_color,
                         tooltip=f"Total Trip Count: {total_trip_count}",
                         **kw).add_to(color_layers[line_color])
+
+    for item in cursor2:
+        coords = item['punto_referencia']['coordinates']
+        ascensor = item['nombre']
+        pasajeros_informados = '{:,.0f}'.format(item['pasajeros_informados']).replace(',', '.')
+
+        folium.Marker(coords, tooltip=f"{ascensor} - Viajes: {pasajeros_informados}").add_to(color_layers['ascensores'])
+
 
     for color_group in color_layers.values():
         color_group.add_to(mapa)

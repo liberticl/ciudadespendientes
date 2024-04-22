@@ -26,9 +26,10 @@ def fullscreen():
     # city += ', Chile'
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
-    collection = db[CP_STRAVA_COLLECTION]
-    center = get_polygon_middle_point(city, collection)
-    m = color_ride_map(city, center, [2019], collection)
+    collection1 = db[CP_STRAVA_COLLECTION]
+    collection2 = db['ascensores']
+    center = get_polygon_middle_point(city, collection1)
+    m = color_ride_map(city, center, [2019], collection1, collection2)
     return m.get_root().render()
 
 
