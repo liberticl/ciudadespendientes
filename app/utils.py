@@ -86,21 +86,22 @@ def get_polygon_middle_point(city, collection):
 
 
 if __name__ == '__main__':
+    import time
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
-    city = 'Viña del Mar, Chile'
-    center = get_polygon_middle_point(city, collection)
-    color_ride_map(city, center, collection)
-    client.close()
-    # import time
-    # start = time.time()
-    # plot_data(collection)
-    # end = time.time()
-    # print(f'Mapa generado en {end - start} segundos\n')
+    # city = 'Viña del Mar, Chile'
+    # center = get_polygon_middle_point(city, collection)
+    # color_ride_map(city, center, collection)
 
-    # for year in [2021, 2022, 2023]:
+    # print('Importando datos a MongoDB...')
+    # for year in [2019]:
     #     start = time.time()
-    #     strava_to_mongo(f'{year}.zip')
+    #     strava_to_mongo(f'{year}.zip', collection)
     #     end = time.time()
     #     print(f'Datos importados a mongodb en {end - start} segundos\n')
+    
+    # print(f'Creando puntos medios...')
+    # create_middle_points(collection)
+    # print(f'Finalizado!')
+    client.close()
