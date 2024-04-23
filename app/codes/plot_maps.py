@@ -135,11 +135,11 @@ def color_ride_map(city, center, years, collection1, collection2):
     cursor1 = collection1.find(
         inside,
         {'_id': 0, **dict.fromkeys(projection, 1)})
-    
+
     cursor2 = collection2.find()
 
-    tile = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
-    attr ='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+    tile = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}' # noqa
+    attr ='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community' # noqa
 
     mapa = folium.Map(
         location=center,
@@ -147,44 +147,47 @@ def color_ride_map(city, center, years, collection1, collection2):
         control_scale=True,
         prefer_canvas=True,
         tiles='')
-    
+
     folium.TileLayer(tile, name='Mapa', attr=attr).add_to(mapa)
 
-    color_layers = {'blue': folium.FeatureGroup(name='Blue Lines'),
-                    'yellow': folium.FeatureGroup(name='Yellow Lines'),
-                    'orange': folium.FeatureGroup(name='Orange Lines'),
-                    'red': folium.FeatureGroup(name='Red Lines'),
+    color_layers = {'green': folium.FeatureGroup(name='Flujo bajo'),
+                    'orange': folium.FeatureGroup(name='Flujo medio'),
+                    'red': folium.FeatureGroup(name='Flujo alto'),
                     'ascensores': folium.FeatureGroup(name='Ascensores'),
                     }
 
+    # https://sni.gob.cl/storage/docs/Ciclo-Rutas-2013.pdf (pag 16)
+    def classify(trip_count):
+        by_day = trip_count / 365
+        if (by_day > 251):
+            return ['red', {"opacity": 0.9, "weight": 4}]
+        elif (by_day > 151):
+            return ['orange', {"opacity": 0.8, "weight": 3}]
+        else:
+            return ['green', {"opacity": 0.3, "weight": 3}]
+
     for item in cursor1:
         coords = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
-        total_trip_count = item['total_trip_count']
-        line_color = 'blue'
-        kw = {"opacity": 0.2, "weight": 1}
-
-        if total_trip_count > 2000:
-            line_color = 'red'
-            kw = {"opacity": 1.0, "weight": 4}
-        elif total_trip_count > 300:
-            line_color = 'orange'
-            kw = {"opacity": 0.8, "weight": 3}
-        elif total_trip_count > 100:
-            line_color = 'yellow'
-            kw = {"opacity": 0.5, "weight": 2}
+        total_trip_count = round(item['total_trip_count'] / 0.01)
+        classification = classify(total_trip_count)
+        total_trip_count = '{:,.0f}'.format(
+            round(item['total_trip_count'] / 0.01)).replace(',', '.')
 
         folium.PolyLine(locations=coords,
-                        color=line_color,
-                        tooltip=f"Total Trip Count: {total_trip_count}",
-                        **kw).add_to(color_layers[line_color])
+                        color=classification[0],
+                        tooltip=f"Viajes anuales estimados: {total_trip_count}", # noqa
+                        **classification[1]).add_to(color_layers[classification[0]]) # noqa
 
     for item in cursor2:
         coords = item['punto_referencia']['coordinates']
         ascensor = item['nombre']
-        pasajeros_informados = '{:,.0f}'.format(item['pasajeros_informados']).replace(',', '.')
+        pasajeros_informados = '{:,.0f}'.format(
+            item['pasajeros_informados']).replace(',', '.')
 
-        folium.Marker(coords, tooltip=f"{ascensor} - Viajes: {pasajeros_informados}").add_to(color_layers['ascensores'])
-
+        folium.Marker(
+            coords,
+            tooltip=f"{ascensor} - Viajes: {pasajeros_informados}"
+            ).add_to(color_layers['ascensores'])
 
     for color_group in color_layers.values():
         color_group.add_to(mapa)
