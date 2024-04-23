@@ -40,7 +40,7 @@ points_inside = [
     },
     {'$group': {
         '_id': '$geometry',
-        'total_trip_count': { '$sum': '$total_trip_count' }
+        'total_trip_count': {'$sum': '$total_trip_count'}
         }
     }
 ]

@@ -86,7 +86,7 @@ def get_polygon_middle_point(city, collection):
 
 
 if __name__ == '__main__':
-    import time
+    # import time
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     #     strava_to_mongo(f'{year}.zip', collection)
     #     end = time.time()
     #     print(f'Datos importados a mongodb en {end - start} segundos\n')
-    
+
     # print(f'Creando puntos medios...')
     # create_middle_points(collection)
     # print(f'Finalizado!')
