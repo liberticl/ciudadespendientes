@@ -1,11 +1,9 @@
 import os
 import pandas as pd
 import geopandas as gpd
-from codes.mongodb import middle_points_aggregate, map_middle_point
-from codes.plot_maps import get_city_bounds
+from codes.mongodb import middle_points_aggregate
 from zipfile import ZipFile
 from pymongo import MongoClient, UpdateOne
-from shapely.geometry import Polygon
 from settings import (MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       DATA_DIR, DEBUG)
 
@@ -72,17 +70,17 @@ def create_middle_points(collection):
 
 
 # Get middle point of polygon
-def get_polygon_middle_point(city, collection):
-    coords = list(Polygon(
-        get_city_bounds(city, only_bounds=True)).exterior.coords)
-    coords = [[round(x, 6), round(y, 6)] for x, y in coords]
-    coords = [coords + [coords[0]]]
-    middle = map_middle_point
-    middle[0]['$match']['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords # noqa
-    cursor = collection.aggregate(middle)
-    data = list(cursor)
-    point = data[0]['middlePoint']['coordinates']
-    return (point[1], point[0])
+# def get_polygon_middle_point(city_bounds, collection):
+#     p = city_bounds[['geometry']].to_crs(epsg='4326').total_bounds
+#     coords = list(Polygon(city_bounds.exterior.coords))
+#     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
+#     coords = [coords + [coords[0]]]
+#     middle = map_middle_point
+#     middle[0]['$match']['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords # noqa
+#     cursor = collection.aggregate(middle)
+#     data = list(cursor)
+#     point = data[0]['middlePoint']['coordinates']
+#     return (point[1], point[0])
 
 
 if __name__ == '__main__':

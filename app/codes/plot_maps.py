@@ -3,7 +3,6 @@ import folium
 from .apis import get_place_polygon
 from .mongodb import points_inside
 from shapely.geometry import LineString, Point, Polygon
-from shapely.geometry import box
 
 
 def ride_map(collection):
@@ -77,21 +76,18 @@ def city_map(city):
     return mapa
 
 
-def get_city_bounds(city, only_bounds=False):
-    gdf_city = get_place_polygon(city).to_crs('EPSG:3857')
+def get_city_data(city):
+    polygon = get_place_polygon(city)
+    gdf_city = polygon[0]
     gdf_city['area'] = gdf_city['geometry'].area
     data = gdf_city[gdf_city['area'] == gdf_city['area'].max()]
+    data.to_crs(epsg='4326').to_dict()
 
-    if (only_bounds):
-        data = data[['geometry']].to_crs(epsg='4326').total_bounds
-        return box(*data)
-    else:
-        data = data.to_crs(epsg='4326').to_dict()
-        return data['geometry'][0]
+    return [data['geometry'][0], polygon[1]]
 
 
 def city_ride_map(city, center, collection):
-    coords = list(Polygon(get_city_bounds(city)).exterior.coords)
+    coords = list(Polygon(city).exterior.coords)
     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
     inside = points_inside
@@ -123,8 +119,8 @@ def city_ride_map(city, center, collection):
     return mapa
 
 
-def color_ride_map(city, center, years, collection1): #, collection2):
-    coords = list(Polygon(get_city_bounds(city)).exterior.coords)
+def color_ride_map(city_bounds, center, years, collection1):
+    coords = list(Polygon(city_bounds).exterior.coords)
     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
     inside = points_inside[0]['$match']
@@ -191,7 +187,7 @@ def color_ride_map(city, center, years, collection1): #, collection2):
 # Incluye visualización de ascensores
 # Crear función con  las capas
 def color_ride_map2(city, center, years, collection1, collection2):
-    coords = list(Polygon(get_city_bounds(city)).exterior.coords)
+    coords = list(Polygon(get_city_data(city)).exterior.coords)
     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
     coords = [coords + [coords[0]]]
     inside = points_inside[0]['$match']
@@ -237,7 +233,7 @@ def color_ride_map2(city, center, years, collection1, collection2):
     for item in cursor1:
         coords = [[lat, lon] for lon, lat in item['geometry']['coordinates']]
         total_trip_count = item['total_trip_count']
-        classification = classify(total_trip_count, years, factor)
+        classification = classify(total_trip_count, years)
         total_trip_count = '{:,.0f}'.format(
             round(item['total_trip_count'] / 0.1)).replace(',', '.')
 
