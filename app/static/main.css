@@ -5,6 +5,7 @@ html, body {
   font-family: 'Source Sans Pro', sans-serif;
   /* The html and body elements cannot have any padding or margin. */
   border-top: 3px solid #2241a8;
+  background-image: url(background.svg);
 }
 
 /* Wrapper for page content to push down footer */
@@ -109,6 +110,9 @@ html, body {
 .container {
   max-width: 800px;
   text-align: center;
+  background-color: #fff;
+  padding: 1%;
+  border-radius: 1.5rem;
 }
 
 .container a {
@@ -382,7 +386,9 @@ h5 a:hover {
 @media screen and (min-width: 601px) {
   .col-lg-3 {
     flex: 0 0 auto;
-    width: 33%;
+    width: 20%;
+    margin: auto;
+    text-align: justify;
   }
 }
 
@@ -390,6 +396,8 @@ h5 a:hover {
   .col-lg-3 {
     flex: 1 0 auto;
     width: 90%;
+    margin: auto;
+    text-align: justify;
   }
 }
 

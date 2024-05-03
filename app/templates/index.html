@@ -2,54 +2,59 @@
 <html lang="es-CL">
 
 <head>
-  
-    <!-- <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LQG5PZVGT6"></script>
+
+  <!-- <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LQG5PZVGT6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-LQG5PZVGT6');
     </script> -->
-  
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Andes Chile ONG">
-    <link rel="shortcut icon" type="image/x-icon" href="https://andeschileong.cl/img/favicon.ico">
-    <title>Flujos de Bicicletas en el Gran Valparaíso | Andes Chile ONG</title>
-    <meta name="description" content="Datos para la Movilidad Urbana">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-    
-    <link rel="preload stylesheet" href="/css/main.min.css" as="style">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <link rel="stylesheet" href="https://andeschileong.cl//css/component.css">
 
-  
-  </head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Andes Chile ONG">
+  <link rel="shortcut icon" type="image/x-icon" href="https://andeschileong.cl/img/favicon.ico">
+  <title>Flujos de Bicicletas en el Gran Valparaíso | Andes Chile ONG</title>
+  <meta name="description" content="Datos para la Movilidad Urbana">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+  <link rel="preload stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+  <link rel="stylesheet" type="text/css"
+    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old">
+  <link rel="stylesheet" href="https://andeschileong.cl//css/component.css">
+
+
+</head>
 
 <body>
-    <div class="container mb-3">
-        <nav class="navbar navbar-expand-lg">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="https://andeschileong.cl/">
-              <i class="fa fa-bicycle fa-2x"></i>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar">
-              <i class="fa fa-bars"></i>
-            </button>
-      
-            <div id="navbar" class="collapse navbar-collapse">
-              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                
-                    <li class="nav-item">
-                      </li><li><a class="nav-link" href="https://andeschileong.cl">ANDES CHILE ONG</a></li>                    
-                  
-                    <li class="nav-item">
-                      </li><li><a class="nav-link" href="/">BUSCAR</a></li>                    
-                  
-                    <!-- <li class="nav-item">
+  <div class="container mb-3">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="https://andeschileong.cl/">
+          <i class="fa fa-bicycle fa-2x"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+          aria-controls="navbar">
+          <i class="fa fa-bars"></i>
+        </button>
+
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+            <li class="nav-item">
+            </li>
+            <li><a class="nav-link" href="https://andeschileong.cl">ANDES CHILE ONG</a></li>
+
+            <li class="nav-item">
+            </li>
+            <li><a class="nav-link" href="/">BUSCAR</a></li>
+
+            <!-- <li class="nav-item">
                       </li><li><a class="nav-link" href="/actividades/">ACTIVIDADES</a></li>                    
                   
                     <li class="nav-item">
@@ -60,44 +65,45 @@
                   
                     <li class="nav-item">
                       </li><li><a class="nav-link" href="/registro/">REGISTRA TU LOCAL</a></li> -->
-                    
-              </ul>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div id="content">
+    <div class="container">
+      <h3 class="mt-3 "><b>Buscador de flujo según año y comuna</b></h3>
+      <br>
+      <form action="/" method="post">
+        <div class="row">
+          <div class="col-lg-3">
+            <div class="form-container">
+              <h5><label for="periodo">Años:</label></h5>
+              <br>
+              {% for per in periodo %}
+              <input type="checkbox" id="per{{ loop.index }}" name="periodo" value="{{ per }}">
+              <label for="per{{ loop.index }}">{{ per }}</label><br>
+              {% endfor %}
             </div>
           </div>
-        </nav>
-    </div>
-    
-    <div id="content">
-        <div class="container">
-            <h3 class="mt-3 "><b>Seleccione Años y comunas</b></h3>
-            <br><br>
-            <div class="row">
-                <div class="col-lg-3" style="text-align: right">
-                    <form action="/" method="post">
-                        <div class="form-container">
-                            <h5><label for="periodo">Años:</label></h5>
-                            <br>
-                            {% for per in periodo %}
-                            <input type="checkbox" id="per{{ loop.index }}" name="periodo" value="{{ per }}">
-                            <label for="per{{ loop.index }}">{{ per }}</label><br>
-                            {% endfor %}
-                        </div>
-                </div>
-                <div class="col-lg-3" style="text-align: justify">
-                    <div class="form-container">
-                        <h5><label for="comunas">Comunas:</label></h5>
-                        <br>
-                            {% for ciudad in comunas %}
-                            <input type="checkbox" id="ciudad{{ loop.index }}" name="comunas" value="{{ ciudad }}">
-                            <label for="ciudad{{ loop.index }}">{{ ciudad }}</label><br>
-                            {% endfor %}
-                            <button type="submit" class="btn btn-primary">Enviar</button>
-                    </div>
-                    </form>
-                </div>
+          <div class="col-lg-3">
+            <div class="form-container">
+              <h5><label for="comunas">Comunas:</label></h5>
+              <br>
+              {% for ciudad in comunas %}
+              <input type="checkbox" id="ciudad{{ loop.index }}" name="comunas" value="{{ ciudad }}">
+              <label for="ciudad{{ loop.index }}">{{ ciudad.upper() }}</label><br>
+              {% endfor %}
             </div>
+          </div>
         </div>
+        <br>
+        <button type="submit" class="btn btn-primary" style="text-align: right">VER MAPA</button>
+      </form>
     </div>
+  </div>
 </body>
 
 </html>
