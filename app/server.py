@@ -58,9 +58,9 @@ def show_data():
 #     m = color_ride_map2(city, center, [2019], collection1, collection2)
 #     return m.get_root().render()
 
-# if __name__ == '__main__':
-#     if (DEBUG):
-#         app.run(debug=True, host='0.0.0.0', port=8080)
-#     else:
-#         from waitress import serve
-#         serve(app, host='0.0.0.0', port=8080)
+if __name__ == '__main__':
+    if (DEBUG):
+        app.run(debug=True, host='0.0.0.0', port=8080)
+    else:
+        from waitress import serve
+        serve(app, host='0.0.0.0', port=8080)
