@@ -69,18 +69,14 @@ def create_middle_points(collection):
     collection.bulk_write([UpdateOne(**op) for op in update_operation])
 
 
-# Get middle point of polygon
-# def get_polygon_middle_point(city_bounds, collection):
-#     p = city_bounds[['geometry']].to_crs(epsg='4326').total_bounds
-#     coords = list(Polygon(city_bounds.exterior.coords))
-#     coords = [[round(x, 6), round(y, 6)] for x, y in coords]
-#     coords = [coords + [coords[0]]]
-#     middle = map_middle_point
-#     middle[0]['$match']['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords # noqa
-#     cursor = collection.aggregate(middle)
-#     data = list(cursor)
-#     point = data[0]['middlePoint']['coordinates']
-#     return (point[1], point[0])
+# Get middle point of city reference
+def get_middle_point(references):
+    references_sum = [0, 0]
+
+    for ref in references:
+        references_sum = [x + y for x, y in zip(references_sum, ref)]
+
+    return tuple([element / len(references) for element in references_sum])
 
 
 if __name__ == '__main__':

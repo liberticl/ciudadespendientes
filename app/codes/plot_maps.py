@@ -121,11 +121,14 @@ def city_ride_map(city, center, collection):
 
 
 def color_ride_map(city_bounds, center, years, collection1):
-    coords = list(Polygon(city_bounds).exterior.coords)
-    coords = [[round(x, 6), round(y, 6)] for x, y in coords]
-    coords = [coords + [coords[0]]]
+    full_coords = []
+    for bounds in city_bounds:
+        coords = list(Polygon(bounds).exterior.coords)
+        coords = [[round(x, 6), round(y, 6)] for x, y in coords]
+        coords = [coords + [coords[0]]]
+        full_coords.append(coords)
     inside = points_inside[0]['$match']
-    inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
+    inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords # noqa
     inside['year']['$in'] = years
     projection = ['year', 'total_trip_count', 'geometry']
     del coords

@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, url_for, render_template
 from pymongo import MongoClient
 from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION)
 from codes.plot_maps import get_city_data, color_ride_map
+from utils import get_middle_point
 
 
 app = Flask(__name__)
@@ -40,10 +41,14 @@ def show_data():
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
-    city = get_city_data(cities[0])
-    city_bounds = city[0]
-    city_reference = city[1]
-    m = color_ride_map(city_bounds, city_reference, years, collection)
+    all_bounds = []
+    all_references = []
+    for city in cities:
+        city_data = get_city_data(city)
+        all_bounds.append(city_data[0])
+        all_references.append(city_data[1])
+    center = get_middle_point(all_references)
+    m = color_ride_map(all_bounds, center, years, collection)
 
     return m.get_root().render()
 

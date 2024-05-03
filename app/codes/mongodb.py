@@ -31,7 +31,7 @@ points_inside = [
         'middlePoint': {
             '$geoWithin': {
                 '$geometry': {
-                    'type': 'Polygon',
+                    'type': 'MultiPolygon',
                     'coordinates': '<city_bounds>'
                     }
                 }
