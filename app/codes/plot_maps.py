@@ -78,10 +78,11 @@ def city_map(city):
 
 def get_city_data(city):
     polygon = get_place_polygon(city)
-    gdf_city = polygon[0]
+    gdf_city = polygon[0].set_crs("epsg:4326")
+    gdf_city = gdf_city.to_crs(crs=3857)
     gdf_city['area'] = gdf_city['geometry'].area
     data = gdf_city[gdf_city['area'] == gdf_city['area'].max()]
-    data.to_crs(epsg='4326').to_dict()
+    data = data.to_crs(crs=4326).to_dict()
 
     return [data['geometry'][0], polygon[1]]
 
