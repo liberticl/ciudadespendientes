@@ -151,9 +151,12 @@ def color_ride_map(city_bounds, center, years, collection1):
 
     folium.TileLayer(tile, name='Mapa', attr=attr).add_to(mapa)
 
-    color_layers = {'green': folium.FeatureGroup(name='Flujo bajo'),
-                    'orange': folium.FeatureGroup(name='Flujo medio'),
-                    'red': folium.FeatureGroup(name='Flujo alto'),
+    color_layers = {'green': folium.FeatureGroup(name='Flujo bajo',
+                                                 show=False),
+                    'orange': folium.FeatureGroup(name='Flujo medio',
+                                                  show=True),
+                    'red': folium.FeatureGroup(name='Flujo alto',
+                                               show=True),
                     # 'ascensores': folium.FeatureGroup(name='Ascensores'),
                     }
 
@@ -185,11 +188,11 @@ def color_ride_map(city_bounds, center, years, collection1):
 
     folium.LayerControl(collapsed=False,
                         overlay=True).add_to(mapa)
-    
+
     # Definir la leyenda
     legend_html = '''
-        <div style="position: fixed; 
-        bottom: 50px; left: 50px; width: 200px; height: 120px; 
+        <div style="position: fixed;
+        bottom: 50px; left: 50px; width: 200px; height: 120px;
         background-color: white; z-index:9999; font-size:14px;
         border:2px solid grey; padding: 10px;">
         <b>Leyenda</b><br>
