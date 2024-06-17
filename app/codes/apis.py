@@ -5,7 +5,7 @@ import geopandas as gpd
 def get_osm_relation(place: str):
     url = f'https://nominatim.openstreetmap.org/search?q={place}&format=json'
     headers = {
-        'Referer': 'https://andeschileong.cl',
+        'Referer': 'https://datos.andeschileong.cl',
         'User-Agent': 'Urban planning by Andes Chile ONG'
     }
     ans = requests.get(url, headers=headers)

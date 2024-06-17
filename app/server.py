@@ -1,11 +1,13 @@
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, session
 from pymongo import MongoClient
-from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION)
+from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION, SESSION_KEY,
+                      USERNAME, PASSWORD)
 from codes.plot_maps import get_city_data, color_ride_map
 from utils import get_middle_point
 
 
 app = Flask(__name__)
+app.secret_key = SESSION_KEY
 
 ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023]
 
@@ -16,20 +18,43 @@ ALLOWED_CITIES = ['Viña del Mar',
                   'Concón']
 
 city = 'Valparaíso, Chile'
-
+users = {USERNAME: PASSWORD}
 
 # TO-DO: mejora de index.html
-@app.route("/", methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == "POST":
-        years = request.form.getlist("periodo")
-        cities = request.form.getlist("comunas")
+    if 'username' in session:
+        if request.method == 'POST':
+            years = request.form.getlist('periodo')
+            cities = request.form.getlist('comunas')
 
-        return redirect(url_for("show_data", periodo=years, comunas=cities))
+            return redirect(url_for('show_data', periodo=years, comunas=cities))
 
-    return render_template("index.html",
-                           periodo=ALLOWED_YEARS,
-                           comunas=ALLOWED_CITIES)
+        return render_template('index.html',
+                            periodo=ALLOWED_YEARS,
+                            comunas=ALLOWED_CITIES)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        print(username)
+        if username in users and users[username] == password:
+            session['username'] = username
+            return redirect(url_for('index'))
+        else:
+            return 'Usuario o contraseña inválido!'
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 
 @app.route("/mapa")
