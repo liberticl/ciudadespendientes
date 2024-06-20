@@ -47,35 +47,36 @@ def login():
             session['username'] = username
             return redirect(url_for('index'))
         else:
-            return 'Usuario o contraseña inválido!'
+            return render_template('error.html')
     return render_template('login.html')
 
 
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route("/mapa")
 def show_data():
+    if 'username' in session:
+        years = [int(year) for year in request.args.getlist("periodo")]
+        cities = [city + ', Chile' for city in request.args.getlist("comunas")]
 
-    years = [int(year) for year in request.args.getlist("periodo")]
-    cities = [city + ', Chile' for city in request.args.getlist("comunas")]
-
-    client = MongoClient(MONGO_DB)
-    db = client[MONGO_CP_DB]
-    collection = db[CP_STRAVA_COLLECTION]
-    all_bounds = []
-    all_references = []
-    for city in cities:
-        city_data = get_city_data(city)
-        all_bounds.append(city_data[0])
-        all_references.append(city_data[1])
-    center = get_middle_point(all_references)
-    m = color_ride_map(all_bounds, center, years, collection)
-
-    return m.get_root().render()
+        client = MongoClient(MONGO_DB)
+        db = client[MONGO_CP_DB]
+        collection = db[CP_STRAVA_COLLECTION]
+        all_bounds = []
+        all_references = []
+        for city in cities:
+            city_data = get_city_data(city)
+            all_bounds.append(city_data[0])
+            all_references.append(city_data[1])
+        center = get_middle_point(all_references)
+        m = color_ride_map(all_bounds, center, years, collection)
+        return m.get_root().render()
+    else:
+        return redirect(url_for('login'))
 
 
 # @app.route("/fullscreen")
