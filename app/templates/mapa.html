@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="map-container">
+    {{ dynamic_content | safe }}
+</div>
+<!--
+<div style="position: fixed;
+        bottom: 50px; left: 50px; width: 200px; height: 120px;
+        background-color: white; z-index:9999; font-size:14px;
+        border:2px solid grey; padding: 10px;">
+        <b>Leyenda</b><br>
+        <i style="background:green;color:white">Flujo bajo</i><br>
+        <i style="background:orange;color:white">Flujo medio</i><br>
+        <i style="background:red;color:white">Flujo alto</i><br>
+        </div>
+    -->
+{% endblock %}

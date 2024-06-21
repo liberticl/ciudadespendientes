@@ -147,6 +147,8 @@ def color_ride_map(city_bounds, center, years, collection1):
         zoom_control=True,
         control_scale=True,
         prefer_canvas=True,
+        # width='95%',
+        height='650px',
         tiles='')
 
     folium.TileLayer(tile, name='Mapa', attr=attr).add_to(mapa)
@@ -189,21 +191,21 @@ def color_ride_map(city_bounds, center, years, collection1):
     folium.LayerControl(collapsed=False,
                         overlay=True).add_to(mapa)
 
-    # Definir la leyenda
-    legend_html = '''
-        <div style="position: fixed;
-        bottom: 50px; left: 50px; width: 200px; height: 120px;
-        background-color: white; z-index:9999; font-size:14px;
-        border:2px solid grey; padding: 10px;">
-        <b>Leyenda</b><br>
-        <i style="background:green;color:white">Flujo bajo</i><br>
-        <i style="background:orange;color:white">Flujo medio</i><br>
-        <i style="background:red;color:white">Flujo alto</i><br>
-        </div>
-    '''
+    # # Definir la leyenda
+    # legend_html = '''
+    #     <div style="position: fixed;
+    #     bottom: 50px; left: 50px; width: 200px; height: 120px;
+    #     background-color: white; z-index:9999; font-size:14px;
+    #     border:2px solid grey; padding: 10px;">
+    #     <b>Leyenda</b><br>
+    #     <i style="background:green;color:white">Flujo bajo</i><br>
+    #     <i style="background:orange;color:white">Flujo medio</i><br>
+    #     <i style="background:red;color:white">Flujo alto</i><br>
+    #     </div>
+    # '''
 
-    # Añadir la leyenda al mapa
-    mapa.get_root().html.add_child(folium.Element(legend_html))
+    # # Añadir la leyenda al mapa
+    # mapa.get_root().html.add_child(folium.Element(legend_html))
 
     return mapa
 
