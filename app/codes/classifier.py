@@ -21,6 +21,7 @@ def get_statistics(numlist):
 
 
 # Si considero 3 desviaciones standar como limite, podría eliminar los viajes deportivos.
+# No creo que funcione, avenida españa desaparecería
 def general(travels, years, statistics, factor):
     travels = travels / factor
     by_day = travels / len(years)
