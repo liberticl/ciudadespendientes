@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # https://sni.gob.cl/storage/docs/Ciclo-Rutas-2013.pdf (pag 16)
 def sectra(travels, years, factor):
     travels = travels / factor
@@ -16,7 +17,7 @@ def get_statistics(numlist):
     data = np.array(numlist)
     mean = np.mean(data)
     std = np.std(data)
-    return (mean,std)
+    return (mean, std)
 
 
 def general(travels, years, statistics, factor):
@@ -31,17 +32,19 @@ def general(travels, years, statistics, factor):
         return ['green', {"opacity": 0.3, "weight": 3}]
 
 
-def classify(travels, years: list, method:str, factor=1, statistics=None):
-    if(method not in ['sectra', 'general']):
-         return -1
+def classify(travels, years: list, method: str, factor=1, statistics=None):
+    if (method not in ['sectra', 'general']):
+        return -1
 
-    if(method == 'sectra'):
-         return sectra(travels, years, factor)
-    
-    elif(method == 'general'):
-         if(not isinstance(statistics,tuple)):
-              print('No se indican estadísticas. Se clasificará según SECTRA.')
-              return sectra(travels, years, factor)
-         
-         return general(travels, years, statistics, factor)
+    if (method == 'sectra'):
+        return sectra(travels, years, factor)
 
+    elif (method == 'general'):
+        if (not isinstance(statistics, tuple)):
+            print('No se indican estadísticas. Se clasificará según SECTRA.')
+            return sectra(travels, years, factor)
+
+        return general(travels, years, statistics, factor)
+
+    else:
+        return -1

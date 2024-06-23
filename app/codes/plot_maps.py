@@ -3,7 +3,7 @@ import folium
 from .apis import get_place_polygon
 from .mongodb import points_inside
 from .classifier import classify, get_statistics
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import Point, Polygon
 
 
 def middle_points_map(collection):
@@ -113,7 +113,7 @@ def color_ride_map(city_bounds, center, years, collection, factor=1):
 
         folium.PolyLine(locations=coords,
                         color=classification[0],
-                        tooltip=f"Viajes anuales: {trips}",  # noqa
+                        tooltip=f"Viajes totales: {trips}",
                         **classification[1]).add_to(layers[classification[0]])  # noqa
 
     for color_group in layers.values():
