@@ -20,6 +20,7 @@ def get_statistics(numlist):
     return (mean, std)
 
 
+# Si considero 3 desviaciones standar como limite, podría eliminar los viajes deportivos.
 def general(travels, years, statistics, factor):
     travels = travels / factor
     by_day = travels / len(years)
