@@ -79,7 +79,7 @@ def get_ride_from_mongo(city_bounds, years, collection):
         full_coords.append(coords)
     del coords
 
-    projection = ['year', 'total_trip_count', 'geometry']
+    projection = ['total_trip_count', 'geometry']
     pipeline = points_inside
     inside = pipeline[0]['$match']
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords  # noqa
@@ -134,7 +134,7 @@ def color_ride_map2(city, center, years, collection1, collection2):
     inside = points_inside[0]['$match']
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = coords
     inside['year']['$in'] = years
-    projection = ['year', 'total_trip_count', 'geometry']
+    projection = ['total_trip_count', 'geometry']
     del coords
     cursor1 = collection1.find(
         inside,
