@@ -3,16 +3,23 @@
 {% block content %}
 <div class="map-container">
     {{ dynamic_content | safe }}
-</div>
-<!--
-<div style="position: fixed;
-        bottom: 50px; left: 50px; width: 200px; height: 120px;
-        background-color: white; z-index:9999; font-size:14px;
-        border:2px solid grey; padding: 10px;">
-        <b>Leyenda</b><br>
-        <i style="background:green;color:white">Flujo bajo</i><br>
-        <i style="background:orange;color:white">Flujo medio</i><br>
-        <i style="background:red;color:white">Flujo alto</i><br>
+    <div
+        style="position: absolute; bottom: 15px; right: 5px; width: auto; height: auto;
+        background-color: rgba(255, 255, 255, 0.7); z-index:9999; font-size:14px; border:2px solid rgba(255, 255, 255, 0.349); padding: 10px; display: flex; align-items: center; border-radius: 0.5rem;">
+        <!-- <b style="margin-right: 10px;">Leyenda</b> -->
+        <div style="display: flex; align-items: center; margin-right: 10px;">
+            <i style="display: inline-block; width: 20px; height: 20px; background: green; margin-right: 5px;"></i>
+            <span>Flujo bajo</span>
         </div>
-    -->
+        <div style="display: flex; align-items: center; margin-right: 10px;">
+            <i style="display: inline-block; width: 20px; height: 20px; background: orange; margin-right: 5px;"></i>
+            <span>Flujo medio</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <i style="display: inline-block; width: 20px; height: 20px; background: red; margin-right: 5px;"></i>
+            <span>Flujo alto</span>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
