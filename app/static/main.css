@@ -103,11 +103,11 @@ html, body {
 .btn {
   background-color: white; 
   color: black; 
-  border: 2px solid #2294a8;
+  border: 2px solid #2241a8;
 }
 
 .btn:hover {
-  background-color: #2294a8;
+  background-color: #2241a8;
   color: white;
 }
 
