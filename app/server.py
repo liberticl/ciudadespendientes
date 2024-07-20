@@ -4,6 +4,7 @@ from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       SESSION_KEY, USERNAME, PASSWORD)
 from codes.plot_maps import get_city_data, color_ride_map
 from utils import get_middle_point
+from waitress import serve
 # from datetime import datetime
 
 
@@ -97,19 +98,8 @@ def show_data():
         return redirect(url_for('login'))
 
 
-# @app.route("/fullscreen")
-# def fullscreen():
-#     client = MongoClient(MONGO_DB)
-#     db = client[MONGO_CP_DB]
-#     collection1 = db[CP_STRAVA_COLLECTION]
-#     collection2 = db['ascensores']
-#     center = get_polygon_middle_point(city, collection1)
-#     m = color_ride_map2(city, center, [2019], collection1, collection2)
-#     return m.get_root().render()
-
 if __name__ == '__main__':
     if (DEBUG):
         app.run(debug=True, host='0.0.0.0', port=8080)
     else:
-        from waitress import serve
         serve(app, host='0.0.0.0', port=8080)
