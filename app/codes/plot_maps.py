@@ -136,7 +136,7 @@ def color_ride_map(city_bounds, center, years, collection, factor=1):
                         overlay=True).add_to(mapa)
     # print(f'| - Adición de controles al mapa | {(datetime.now() - start).total_seconds()} |') # noqa
 
-    return mapa
+    return mapa, stats
 
 
 # Incluye visualización de ascensores

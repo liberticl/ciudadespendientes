@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 from pymongo import MongoClient
 from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
-                      SESSION_KEY, USERNAME, PASSWORD)
+                      SESSION_KEY, AUTH_INFO)
 from codes.plot_maps import get_city_data, color_ride_map
 from utils import get_middle_point
 from waitress import serve
@@ -20,7 +20,7 @@ ALLOWED_CITIES = ['Viña del Mar',
                   'Concón']
 
 city = 'Valparaíso, Chile'
-users = {USERNAME: PASSWORD}
+# users = {USERNAME: PASSWORD}
 
 
 @app.before_request
@@ -52,7 +52,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username in users and users[username] == password:
+        if username in AUTH_INFO and AUTH_INFO[username] == password:
             session['username'] = username
             return redirect(url_for('index'))
         else:
@@ -87,13 +87,16 @@ def show_data():
         center = get_middle_point(all_references)
         # print(f'| Cálculo de punto medio de la comuna | {(datetime.now() - start).total_seconds()} |') # noqa
         # start = datetime.now()
-        m = color_ride_map(all_bounds, center, years, collection)
+        m, s = color_ride_map(all_bounds, center, years, collection)
         # print(f'| Obtención del mapa HTML con Folium | {(datetime.now() - start).total_seconds()} |') # noqa
         # dynamic = m.get_root().render()
         # start = datetime.now()
         dynamic = m._repr_html_()
         # print(f'| Renderizado del mapa HTML en Flask | {(datetime.now() - start).total_seconds()} |') # noqa
-        return render_template('mapa.html', dynamic_content=dynamic)
+        stats = [round(x) for x in s]
+        return render_template('mapa.html',
+                               stats=stats,
+                               dynamic_content=dynamic)
     else:
         return redirect(url_for('login'))
 
