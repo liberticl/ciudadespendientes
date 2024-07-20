@@ -16,5 +16,14 @@ SESSION_KEY = os.environ.get('SESSION_KEY')
 # Users
 USERNAME = os.environ.get('ADMINUSER')
 PASSWORD = os.environ.get('PASSWORD')
+STRAVAUSER = os.environ.get('STRAVAUSER')
+STRAVAPSS = os.environ.get('STRAVAPSS')
+TESTUSER = os.environ.get('TESTUSER')
+TESTPSS = os.environ.get('TESTPSS')
 
+AUTH_INFO = {
+    USERNAME:PASSWORD,
+    STRAVAUSER: STRAVAPSS,
+    TESTUSER: TESTPSS
+}
 # print(DEBUG)
