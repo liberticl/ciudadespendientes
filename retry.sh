@@ -4,4 +4,4 @@ docker images -f "dangling=true"
 docker rmi $(docker images -q)
 
 echo "Levantando el docker de Ciudades Pendientes"
-docker-compose up
+docker-compose up -d

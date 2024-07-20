@@ -5,7 +5,6 @@ x-baseapp:
   build:
     context: ./
     dockerfile: Dockerfile
-    target: cp-web
 
 services:
   app:
