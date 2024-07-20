@@ -4,6 +4,7 @@ from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       SESSION_KEY, USERNAME, PASSWORD)
 from codes.plot_maps import get_city_data, color_ride_map
 from utils import get_middle_point
+# from datetime import datetime
 
 
 app = Flask(__name__)
@@ -76,14 +77,22 @@ def show_data():
         collection = db[CP_STRAVA_COLLECTION]
         all_bounds = []
         all_references = []
+        # start = datetime.now()
         for city in cities:
             city_data = get_city_data(city)
             all_bounds.append(city_data[0])
             all_references.append(city_data[1])
+        # print(f'| Búsqueda de ciudades en API de OpenStreetMap | {(datetime.now() - start).total_seconds()} |') # noqa
+        # start = datetime.now()
         center = get_middle_point(all_references)
+        # print(f'| Cálculo de punto medio de la comuna | {(datetime.now() - start).total_seconds()} |') # noqa
+        # start = datetime.now()
         m = color_ride_map(all_bounds, center, years, collection)
+        # print(f'| Obtención del mapa HTML con Folium | {(datetime.now() - start).total_seconds()} |') # noqa
         # dynamic = m.get_root().render()
+        # start = datetime.now()
         dynamic = m._repr_html_()
+        # print(f'| Renderizado del mapa HTML en Flask | {(datetime.now() - start).total_seconds()} |') # noqa
         return render_template('mapa.html', dynamic_content=dynamic)
     else:
         return redirect(url_for('login'))

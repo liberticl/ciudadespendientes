@@ -100,11 +100,21 @@ def process_ride_data(mongodata):
     return (ride_data, trip_count)
 
 
+# from datetime import datetime
 def color_ride_map(city_bounds, center, years, collection, factor=1):
+    # start = datetime.now()
     mapa, layers = create_map(center)
+    # print(f'| - Creación del mapa base en Folium | {(datetime.now() - start).total_seconds()} |') # noqa
+    # start = datetime.now()
     mongodata = get_ride_from_mongo(city_bounds, years, collection)
+    # print(f'| - Obtención de datos desde MongoDB | {(datetime.now() - start).total_seconds()} |') # noqa
+    # start = datetime.now()
     ride_data, trip_count = process_ride_data(mongodata)
+    # print(f'| - Procesamiento de datos | {(datetime.now() - start).total_seconds()} |') # noqa
+    # start = datetime.now()
     stats = get_statistics(trip_count)
+    # print(f'| - Cálculo de estadísticas | {(datetime.now() - start).total_seconds()} |') # noqa
+    # start = datetime.now()
     for coords, trips in ride_data:
         classification = classify(
             trips, years, method='general', factor=factor, statistics=stats)
@@ -115,12 +125,16 @@ def color_ride_map(city_bounds, center, years, collection, factor=1):
                         color=classification[0],
                         tooltip=f"Viajes totales: {trips}",
                         **classification[1]).add_to(layers[classification[0]])  # noqa
-
+    # print(f'| - Clasificación  | {(datetime.now() - start).total_seconds()} |') # noqa
+    # start = datetime.now()
     for color_group in layers.values():
         color_group.add_to(mapa)
+    # print(f'| - Asignación de color a líneas | {(datetime.now() - start).total_seconds()} |') # noqa
+    # start = datetime.now()
 
     folium.LayerControl(collapsed=False,
                         overlay=True).add_to(mapa)
+    # print(f'| - Adición de controles al mapa | {(datetime.now() - start).total_seconds()} |') # noqa
 
     return mapa
 
