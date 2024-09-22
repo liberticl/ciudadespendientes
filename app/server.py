@@ -87,7 +87,8 @@ def show_data():
         center = get_middle_point(all_references)
         # print(f'| Cálculo de punto medio de la comuna | {(datetime.now() - start).total_seconds()} |') # noqa
         # start = datetime.now()
-        m, s = color_ride_map(all_bounds, center, years, collection)
+        m, s = color_ride_map(all_bounds, center, years,
+                              collection, anual=False)
         # print(f'| Obtención del mapa HTML con Folium | {(datetime.now() - start).total_seconds()} |') # noqa
         # dynamic = m.get_root().render()
         # start = datetime.now()

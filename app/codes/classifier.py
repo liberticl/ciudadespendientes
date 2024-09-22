@@ -13,28 +13,35 @@ def sectra(travels, years, factor):
         return ['green', {"opacity": 0.3, "weight": 3}]
 
 
-def get_statistics(numlist):
+def get_statistics(numlist, years=None):
     data = np.array(numlist)
     mean = np.mean(data)
     std = np.std(data)
+    if (isinstance(years, list)):
+        d = len(years)
+        return (round(mean/d), round(std/d))
     return (mean, std)
 
 
 def general(travels, years, statistics, factor):
     travels = travels / factor
-    by_day = travels / len(years)
+    by_year = travels / len(years)
     mean, std = statistics
-    if (by_day > mean + std):
+    if (by_year > mean + std):
         return ['red', {"opacity": 0.9, "weight": 4}]
-    elif (by_day > mean):
+    elif (by_year > mean):
         return ['orange', {"opacity": 0.8, "weight": 3}]
     else:
         return ['green', {"opacity": 0.3, "weight": 3}]
 
 
-def classify(travels, years: list, method: str, factor=1, statistics=None):
+def classify(travels, years: list, method: str, factor=1,
+             statistics=None, anual=False):
     if (method not in ['sectra', 'general']):
         return -1
+
+    # If not anual, then len of years will always be 1
+    years = years if anual else [years[0]]
 
     if (method == 'sectra'):
         return sectra(travels, years, factor)

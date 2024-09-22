@@ -100,8 +100,17 @@ def process_ride_data(mongodata):
     return (ride_data, trip_count)
 
 
-# from datetime import datetime
-def color_ride_map(city_bounds, center, years, collection, factor=1):
+def color_ride_map(city_bounds, center, years, collection,
+                   factor=1, anual=False):
+    """
+        Generate HTML map based on:
+        - city_bounds: limits of the city
+        - center: middle point of the simplified city bounds
+        - years: year or list of years of interest
+        - collection: mongoDB collection to plot
+        - factor: error between Strava data and reality
+        - anual: True if map shows average data or full data based on years
+    """
     # start = datetime.now()
     mapa, layers = create_map(center)
     # print(f'| - Creación del mapa base en Folium | {(datetime.now() - start).total_seconds()} |') # noqa
@@ -112,14 +121,21 @@ def color_ride_map(city_bounds, center, years, collection, factor=1):
     ride_data, trip_count = process_ride_data(mongodata)
     # print(f'| - Procesamiento de datos | {(datetime.now() - start).total_seconds()} |') # noqa
     # start = datetime.now()
-    stats = get_statistics(trip_count)
+
+    stats = get_statistics(
+        trip_count, years) if anual else get_statistics(trip_count)
     # print(f'| - Cálculo de estadísticas | {(datetime.now() - start).total_seconds()} |') # noqa
     # start = datetime.now()
+
     for coords, trips in ride_data:
         classification = classify(
-            trips, years, method='general', factor=factor, statistics=stats)
-        trips = '{:,.0f}'.format(
-            round(trips / factor)).replace(',', '.')
+            trips, years, method='general', factor=factor,
+            statistics=stats, anual=anual)
+        if (anual and isinstance(years, list)):
+            trips = '{:,.0f}'.format(
+                round(trips / len(years) / factor)).replace(',', '.')
+        else:
+            trips = '{:,.0f}'.format(round(trips / factor)).replace(',', '.')
 
         folium.PolyLine(locations=coords,
                         color=classification[0],
