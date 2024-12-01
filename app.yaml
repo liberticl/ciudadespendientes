@@ -1,5 +1,5 @@
 runtime: python311
-entrypoint: gunicorn server:app
+entrypoint: gunicorn app.server:app
 
 instance_class: F1
 
