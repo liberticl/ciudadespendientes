@@ -1,9 +1,9 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 from pymongo import MongoClient
-from settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
+from app.settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       SESSION_KEY, AUTH_INFO)
 from codes.plot_maps import get_city_data, color_ride_map
-from utils import get_middle_point
+from app.utils import get_middle_point
 from waitress import serve
 # from datetime import datetime
 

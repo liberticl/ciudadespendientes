@@ -1,0 +1,30 @@
+runtime: python311
+entrypoint: gunicorn server:app
+
+instance_class: F1
+
+env_variables:
+  # MongoDB info
+  MONGO_DB: "mongodb+srv://admin:TsOEBZG0cLydqIF3@andeschileong.q3flram.mongodb.net/?retryWrites=true&w=majority&appName=andeschileong"
+  MONGO_CP_DB: "ciudadespendientes"
+  CP_STRAVA_COLLECTION: "strava"
+
+  # Other
+  DEBUG: "true"
+  DATA_DIR: "data"
+  SESSION_KEY: "p10528566"
+
+  # Users
+  ADMINUSER: "admin"
+  PASSWORD: "p10528566"
+
+  STRAVAUSER: "strava"
+  STRAVAPSS: "str1234va"
+
+  TESTUSER: "test"
+  TESTPSS: "andes1298"
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 2

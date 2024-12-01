@@ -4,7 +4,7 @@ import geopandas as gpd
 from codes.mongodb import middle_points_aggregate
 from zipfile import ZipFile
 from pymongo import MongoClient, UpdateOne
-from settings import (MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
+from app.settings import (MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
                       DATA_DIR, DEBUG)
 
 
