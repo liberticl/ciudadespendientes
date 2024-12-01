@@ -59,4 +59,4 @@ urllib3==2.2.1
 waitress==3.0.0
 Werkzeug==3.0.1
 xyzservices==2024.4.0
-gunicorn=23.0.0
+gunicorn==23.0.0
