@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 from pymongo import MongoClient
 from app.settings import (DEBUG, MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
-                      SESSION_KEY, AUTH_INFO)
+                      SESSION_KEY, AUTH_INFO, FLASK_ENV)
 from codes.plot_maps import get_city_data, color_ride_map
 from app.utils import get_middle_point
 from waitress import serve
@@ -103,7 +103,8 @@ def show_data():
 
 
 if __name__ == '__main__':
-    if (DEBUG):
-        app.run(debug=True, host='0.0.0.0', port=8080)
-    else:
-        serve(app, host='0.0.0.0', port=8080)
+    if (FLASK_ENV == 'dev'):
+        if(DEBUG):
+            app.run(debug=True, host='0.0.0.0', port=8080)
+        else:
+            serve(app, host='0.0.0.0', port=8080)        
