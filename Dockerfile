@@ -6,4 +6,4 @@ RUN pip3 install -r requirements.txt
 RUN mkdir /code
 WORKDIR /code
 COPY . /code/
-CMD ["python3", "server.py"]
+CMD ["gunicorn", "app.server:app"]

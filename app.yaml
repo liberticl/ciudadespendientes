@@ -10,7 +10,7 @@ env_variables:
   CP_STRAVA_COLLECTION: "strava"
 
   # Other
-  FLASK_ENV: "prod"
+  ENV: "prod"
   DEBUG: "false"
   DATA_DIR: "data"
   SESSION_KEY: "p10528566"

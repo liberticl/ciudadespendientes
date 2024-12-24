@@ -9,6 +9,6 @@ x-baseapp:
 services:
   app:
     <<: *base-app
-    command: python /code/app/server.py
+    command: gunicorn /code/app/server.py
     ports:
       - "8080:8080"
