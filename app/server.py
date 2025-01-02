@@ -91,7 +91,7 @@ def show_data():
         # print(f'| Obtención del mapa HTML con Folium | {(datetime.now() - start).total_seconds()} |') # noqa
         # dynamic = m.get_root().render()
         # start = datetime.now()
-        dynamic = m._repr_html_()
+        dynamic = m.get_root().render()
         # print(f'| Renderizado del mapa HTML en Flask | {(datetime.now() - start).total_seconds()} |') # noqa
         stats = [round(x) for x in s]
         return render_template('mapa.html',
